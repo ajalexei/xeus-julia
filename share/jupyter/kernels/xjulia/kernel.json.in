@@ -1,0 +1,12 @@
+{
+  "display_name": "julia 1.7.1 (xjulia)",
+  "argv": [
+      "@XEUS_JULIA_KERNELSPEC_PATH@xjulia",
+      "-f",
+      "{connection_file}"
+  ],
+  "language": "julia",
+  "metadata": {"debugger": false
+  
+  }
+}
