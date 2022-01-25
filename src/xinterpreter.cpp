@@ -18,6 +18,10 @@
 
 #include "xeus-julia/xinterpreter.hpp"
 
+#include <julia.h>
+
+//JULIA_DEFINE_FAST_TLS
+
 namespace nl = nlohmann;
 
 namespace xeus_julia
@@ -36,7 +40,8 @@ namespace xeus_julia
                                                       bool /*allow_stdin*/)
     {
         nl::json kernel_res;
-
+        // Evaluate the Julia code
+//        jl_eval_string(code);
         if (code.compare("hello, world") == 0)
         {
             publish_stream("stdout", code);
@@ -81,6 +86,8 @@ namespace xeus_julia
     void interpreter::configure_impl()
     {
         // Perform some operations
+        // Required -- sets up the Julia context
+        jl_init();
     }
 
     nl::json interpreter::is_complete_request_impl(const std::string& code)
@@ -142,6 +149,10 @@ namespace xeus_julia
     }
 
     void interpreter::shutdown_request_impl() {
+        /* This is strongly recommended by the Julia embedding manual:
+        */
+        jl_atexit_hook(0);
+        
         std::cout << "Bye!!" << std::endl;
     }
 
