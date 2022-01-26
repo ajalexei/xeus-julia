@@ -1,5 +1,5 @@
 #############################################################################
-#Copyright (c) 2022,                                          
+#Copyright (c) 2022, Alexei Andreanov                               
 #                                                                         
 #Distributed under the terms of the GNU General Public License v3.                 
 #                                                                         
