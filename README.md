@@ -1,6 +1,8 @@
 # ![xeus-julia](docs/source/xeus-logo.svg)
 
-main
+This is an attempt of implementation of the ![Julia](https://julialang.org) language kernel for Jupyter based on the ![Xeus](https://github.com/jupyter-xeus/xeus) library.
+
+__The implementation is at the very beginning and is not ready for any use!__
 
 
 [![Build Status](https://github.com/ajalexei/xeus-julia/actions/workflows/main.yml/badge.svg)](https://github.com/ajalexei/xeus-julia/actions/workflows/main.yml)
@@ -65,7 +67,7 @@ To try out xeus-julia interactively in your web browser, just click on the binde
 
 ## Documentation
 
-To get started with using `xeus-julia`, check out the full documentation
+To get started with using `xeus-julia`, check out the full documentation (__not yet there!__)
 
 http://xeus-julia.readthedocs.io
 
