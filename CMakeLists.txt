@@ -1,9 +1,9 @@
 #############################################################################
-#Copyright (c) 2022, Alexei Andreanov                               
-#                                                                         
-#Distributed under the terms of the GNU General Public License v3.                 
-#                                                                         
-#The full license is in the file LICENSE, distributed with this software. 
+#Copyright (c) 2022, Alexei Andreanov
+#
+#Distributed under the terms of the GNU General Public License v3.
+#
+#The full license is in the file LICENSE, distributed with this software.
 #############################################################################
 
 cmake_minimum_required(VERSION 3.4.3)
@@ -52,8 +52,8 @@ option(XEUS_JULIA_BUILD_STATIC "Build xeus-julia static library" ON)
 OPTION(XEUS_JULIA_BUILD_SHARED "Split xjulia build into executable and library" ON)
 OPTION(XEUS_JULIA_BUILD_EXECUTABLE "Build the xjulia executable" ON)
 
-OPTION(XEUS_JULIA_USE_SHARED_XEUS "Link xjulia  with the xeus shared library (instead of the static library)" ON)
-OPTION(XEUS_JULIA_USE_SHARED_XEUS_JULIA "Link xjulia  with the xeus shared library (instead of the static library)" ON)
+OPTION(XEUS_JULIA_USE_SHARED_XEUS "Link xjulia with the xeus shared library (instead of the static library)" ON)
+OPTION(XEUS_JULIA_USE_SHARED_XEUS_JULIA "Link xjulia with the xeus shared library (instead of the static library)" ON)
 
 
 
@@ -66,6 +66,7 @@ set(xeus_REQUIRED_VERSION 2.0.0)
 if (NOT TARGET xtl)
     find_package(xtl ${xtl_REQUIRED_VERSION} REQUIRED)
 endif ()
+
 if (NOT TARGET xeus AND NOT TARGET xeus-static)
     find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 endif ()
@@ -115,7 +116,7 @@ set(XEUS_JULIA_HEADERS
 )
 
 set(XEUS_JULIA_SRC
-    src/xinterpreter.cpp 
+    src/xinterpreter.cpp
 )
 
 set(XEUS_JULIA_MAIN_SRC
@@ -188,7 +189,7 @@ macro(xeus_julia_set_kernel_options target_name)
         target_link_libraries(${target_name} PRIVATE xeus-julia-static)
     endif()
 
-    find_package(Threads) 
+    find_package(Threads)
         target_link_libraries(${target_name} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
 
     
@@ -230,7 +231,7 @@ macro(xeus_julia_create_target target_name linkage output_name)
 
     target_link_libraries(${target_name} PUBLIC ${XEUS_JULIA_XEUS_TARGET} xtl )
     if (WIN32 OR CYGWIN)
-        # 
+        #
     elseif (APPLE)
         target_link_libraries(${target_name} PRIVATE "-undefined dynamic_lookup")
     endif ()
