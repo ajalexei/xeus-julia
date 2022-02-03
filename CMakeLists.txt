@@ -62,6 +62,7 @@ OPTION(XEUS_JULIA_USE_SHARED_XEUS_JULIA "Link xjulia with the xeus shared librar
 # ============
 set(xtl_REQUIRED_VERSION 0.6.23)
 set(xeus_REQUIRED_VERSION 2.0.0)
+set(julia_REQUIRED_VERSION 1.7)
 
 if (NOT TARGET xtl)
     find_package(xtl ${xtl_REQUIRED_VERSION} REQUIRED)
@@ -71,6 +72,9 @@ if (NOT TARGET xeus AND NOT TARGET xeus-static)
     find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 endif ()
 
+if (NOT TARGET julia)
+    find_package(julia ${julia_REQUIRED_VERSION} REQUIRED)
+endif ()
 
 
 # Flags
@@ -102,6 +106,15 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
     else ()
         message(FATAL_ERROR "Unsupported compiler -- xeus requires C++17 support!")
     endif ()
+
+#   Copied from the Julia manual
+#    JL_SHARE = $(shell julia -e 'print(joinpath(Sys.BINDIR, Base.DATAROOTDIR, "julia"))')
+#    CFLAGS   += $(shell $(JL_SHARE)/julia-config.jl --cflags)
+#    CXXFLAGS += $(shell $(JL_SHARE)/julia-config.jl --cflags)
+#    LDFLAGS  += $(shell $(JL_SHARE)/julia-config.jl --ldflags)
+#    LDLIBS   += $(shell $(JL_SHARE)/julia-config.jl --ldlibs)
+#   To be updated
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ")
 
 endif ()
 
