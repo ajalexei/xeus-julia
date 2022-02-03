@@ -1,9 +1,9 @@
 /***************************************************************************
-* Copyright (c) 2022, Alexei Andreanov                                  
-*                                                                          
-* Distributed under the terms of the GNU General Public License v3.                 
-*                                                                          
-* The full license is in the file LICENSE, distributed with this software. 
+* Copyright (c) 2022, Alexei Andreanov
+*
+* Distributed under the terms of the GNU General Public License v3.
+*
+* The full license is in the file LICENSE, distributed with this software.
 ****************************************************************************/
 
 #include <string>
@@ -78,17 +78,9 @@ namespace xeus_julia
 
         //  Evaluate the Julia code and return a pointer to the result
         jl_value_t *result = jl_eval_string(code);
-        //  Convert Julia result into the string
-        string result_str = std::string(jl_string_ptr(result));
+
         //  Has any exception been raised/thrown?
         jl_value_t *error = jl_exception_occurred();
-        
-        //  This call will appear to do nothing. However, it is possible to check whether an exception was thrown:
-        //  if (jl_exception_occurred())
-        //      printf("%s \n", jl_typeof_str(jl_exception_occurred()));
-        //  If you are using the Julia C API from a language that supports exceptions (e.g. Python, C#, C++), 
-        //  it makes sense to wrap each call into libjulia with a function that checks whether an exception was thrown, 
-        //  and then rethrows the exception in the host language.
 
         nl::json pub_data;
         //  Code is to be replaced with the result converted to a string
@@ -96,11 +88,29 @@ namespace xeus_julia
         pub_data["text/plain"] = result_str;
 
         //  No exception was raised/thrown
-        if (error == NULL) {
+        if (error == NULL)
+        {
+            //  Convert Julia result into the string
+            //  This is incorrect: it only converts C string into Julia string
+            //string result_str = std::string(jl_string_ptr(result));
+            /*
+                The options I have:
+                    1. use repr("text/plain", result) to convert the result to a string
+                    2. are the stdout ahd stderr intercepted by xeus?
+            */
+            //  Base.repr function
+            const static jl_function_t *repr_func = jl_get_function(jl_base_module, "repr");
+            //  output MIME type
+            const static jl_value_t *mime = jl_box_string("text/plain");
+            //  execute repr(mime="text/plain", result) in Julia
+            jl_value_t *result_jl_string = jl_call2(repr_func, mime, result);
+            //  convert Julia string to C++ string
+            string result_string = std::string(jl_string_ptr(result_jl_string));
+
             kernel_res["status"] = "ok";
-//            kernel_res["user_expressions"] = ;
+//            kernel_res["user_expressions"] = result_string;
             
-            publish_execution_result(execution_counter, 
+            publish_execution_result(execution_counter,
                 std::move(pub_data),
                 nl::json::object()
                     );
@@ -109,7 +119,15 @@ namespace xeus_julia
 //                return xeus::create_successful_reply();
         }
         //  An error occurred
-        else {
+        else
+        {
+            //  This call will appear to do nothing. However, it is possible to check whether an exception was thrown:
+            //  if (jl_exception_occurred())
+            //      printf("%s \n", jl_typeof_str(jl_exception_occurred()));
+            //  If you are using the Julia C API from a language that supports exceptions (e.g. Python, C#, C++),
+            //  it makes sense to wrap each call into libjulia with a function that checks whether an exception was thrown,
+            //  and then rethrows the exception in the host language.
+
             //  Provide details about the error
             if (!silent) {
                 publish_execution_error(jl_typeof_str(error), jl_(error), jl_(error));
@@ -146,7 +164,7 @@ namespace xeus_julia
         else
         {
             return xeus::create_is_complete_reply("complete"/*status*/);
-        }   
+        }
     }
 
     //  Autocompletion of the Julia code
@@ -159,8 +177,8 @@ namespace xeus_julia
        
             return xeus::create_complete_reply(
                 {
-                    std::string("Hello"), 
-                    std::string("Hey"), 
+                    std::string("Hello"),
+                    std::string("Hey"),
                     std::string("Howdy")
                 },          /*matches*/
                 5,          /*cursor_start*/
@@ -186,7 +204,7 @@ namespace xeus_julia
                                                       int /*detail_level*/)
     {
         
-        return xeus::create_inspect_reply(true/*found*/, 
+        return xeus::create_inspect_reply(true/*found*/,
             {{std::string("text/plain"), std::string("hello!")}}, /*data*/
             {{std::string("text/plain"), std::string("hello!")}}  /*meta-data*/
         );
@@ -212,8 +230,8 @@ namespace xeus_julia
         const std::string  implementation_version = XEUS_JULIA_VERSION;
         const std::string  language_name = "julia";
         const std::string  language_version = "1.7.1";
-        const std::string  language_mimetype = "text/x-juliasrc";;
-        const std::string  language_file_extension = "jl";;
+        const std::string  language_mimetype = "text/x-juliasrc";
+        const std::string  language_file_extension = "jl";
         const std::string  language_pygments_lexer = "";
         const std::string  language_codemirror_mode = "";
         const std::string  language_nbconvert_exporter = "";
