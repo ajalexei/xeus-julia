@@ -64,6 +64,14 @@ OPTION(XEUS_JULIA_USE_SHARED_XEUS_JULIA "Link xjulia with the xeus shared librar
 # Dependencies
 # ============
 
+# Fing pkg-config
+find_package(PkgConfig REQUIRED)
+pkg_search_module(LibUUID uuid REQUIRED)
+
+# if (TARGET PkgConfig::LibUUID)
+#    message(STATUS "Found libuuid)
+# endif ()
+
 set(xtl_REQUIRED_VERSION 0.6.23)
 set(xeus_REQUIRED_VERSION 2.0.0)
 set(julia_REQUIRED_VERSION 1.7)
@@ -246,7 +254,7 @@ macro(xeus_julia_create_target target_name linkage output_name)
 endmacro()
 
 # xeus-julia
-# ===========
+# ==========
 
 set(XEUS_JULIA_TARGETS "")
 
@@ -269,7 +277,7 @@ endif ()
 
 
 # xeus-julia
-# =======
+# ==========
 
 if (XEUS_JULIA_BUILD_EXECUTABLE)
     add_executable(xjulia ${XEUS_JULIA_MAIN_SRC})
