@@ -7,24 +7,30 @@
 #############################################################################
 
 cmake_minimum_required(VERSION 3.4.3)
+
 project(xeus-julia)
+
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 set(XEUS_JULIA_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 
 # Versionning
 # ===========
 
 file(STRINGS "${XEUS_JULIA_INCLUDE_DIR}/xeus-julia/xeus_julia_config.hpp" version_defines
      REGEX "#define XEUS_JULIA_VERSION_(MAJOR|MINOR|PATCH)")
+
 foreach (ver ${version_defines})
     if (ver MATCHES "#define XEUS_JULIA_VERSION_(MAJOR|MINOR|PATCH) +([^ ]+)$")
         set(XEUS_JULIA_VERSION_${CMAKE_MATCH_1} "${CMAKE_MATCH_2}" CACHE INTERNAL "")
     endif ()
 endforeach ()
+
 set(${PROJECT_NAME}_VERSION
     ${XEUS_JULIA_VERSION_MAJOR}.${XEUS_JULIA_VERSION_MINOR}.${XEUS_JULIA_VERSION_PATCH})
 message(STATUS "Building xeus-julia v${${PROJECT_NAME}_VERSION}")
+
 
 # Configuration
 # =============
@@ -35,12 +41,11 @@ if (NOT DEFINED XEUS_JULIA_KERNELSPEC_PATH)
     set(XEUS_JULIA_KERNELSPEC_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/")
 endif ()
 
-
-
 configure_file (
     "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xjulia/kernel.json.in"
     "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xjulia/kernel.json"
 )
+
 
 # Build options
 # =============
@@ -56,10 +61,9 @@ OPTION(XEUS_JULIA_USE_SHARED_XEUS "Link xjulia with the xeus shared library (ins
 OPTION(XEUS_JULIA_USE_SHARED_XEUS_JULIA "Link xjulia with the xeus shared library (instead of the static library)" ON)
 
 
-
-
 # Dependencies
 # ============
+
 set(xtl_REQUIRED_VERSION 0.6.23)
 set(xeus_REQUIRED_VERSION 2.0.0)
 set(julia_REQUIRED_VERSION 1.7)
@@ -79,6 +83,7 @@ endif ()
 
 # Flags
 # =====
+
 include(CheckCXXCompilerFlag)
 
 if (MSVC)
@@ -89,7 +94,6 @@ endif ()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Intel")
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter -Wextra -Wreorder")
-    
 
     if (XEUS_JULIA_DISABLE_ARCH_NATIVE AND NOT XEUS_JULIA_DISABLE_TUNE_GENERIC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mtune=generic")
@@ -99,7 +103,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
     endif ()
 
-
     CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP_17_FLAG)
     if (HAS_CPP_17_FLAG)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
@@ -107,17 +110,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
         message(FATAL_ERROR "Unsupported compiler -- xeus requires C++17 support!")
     endif ()
 
-#   Copied from the Julia manual
-#    JL_SHARE = $(shell julia -e 'print(joinpath(Sys.BINDIR, Base.DATAROOTDIR, "julia"))')
-#    CFLAGS   += $(shell $(JL_SHARE)/julia-config.jl --cflags)
-#    CXXFLAGS += $(shell $(JL_SHARE)/julia-config.jl --cflags)
-#    LDFLAGS  += $(shell $(JL_SHARE)/julia-config.jl --ldflags)
-#    LDLIBS   += $(shell $(JL_SHARE)/julia-config.jl --ldlibs)
-#   To be updated
-#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ")
-
 endif ()
-
 
 
 # Source files
@@ -205,8 +198,6 @@ macro(xeus_julia_set_kernel_options target_name)
     find_package(Threads)
         target_link_libraries(${target_name} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
 
-    
-
 endmacro()
 
 # Common macro for shared and static library
@@ -252,8 +243,6 @@ macro(xeus_julia_create_target target_name linkage output_name)
     find_package(Threads) # TODO: add Threads as a dependence of xeus-static?
         target_link_libraries(${target_name} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
 
-    
-
 endmacro()
 
 # xeus-julia
@@ -278,8 +267,10 @@ if (XEUS_JULIA_BUILD_STATIC)
     list(APPEND XEUS_JULIA_TARGETS xeus-julia-static)
 endif ()
 
+
 # xeus-julia
 # =======
+
 if (XEUS_JULIA_BUILD_EXECUTABLE)
     add_executable(xjulia ${XEUS_JULIA_MAIN_SRC})
     target_compile_features(xjulia PRIVATE cxx_std_17)
@@ -288,9 +279,9 @@ if (XEUS_JULIA_BUILD_EXECUTABLE)
 endif()
 
 
-
 # Installation
 # ============
+
 include(CMakePackageConfigHelpers)
 
 set(XEUS_JULIA_CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}" CACHE STRING "install path for xeus-juliaConfig.cmake")
