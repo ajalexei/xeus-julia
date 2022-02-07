@@ -66,7 +66,11 @@ OPTION(XEUS_JULIA_USE_SHARED_XEUS_JULIA "Link xjulia with the xeus shared librar
 
 # Fing pkg-config
 find_package(PkgConfig REQUIRED)
-pkg_search_module(LibUUID uuid REQUIRED)
+
+# UUID
+if(UNIX AND NOT APPLE)
+    pkg_search_module(LibUUID uuid REQUIRED)
+endif()
 
 # if (TARGET PkgConfig::LibUUID)
 #    message(STATUS "Found libuuid)
@@ -85,7 +89,8 @@ if (NOT TARGET xeus AND NOT TARGET xeus-static)
 endif ()
 
 if (NOT TARGET julia)
-    find_package(julia ${julia_REQUIRED_VERSION} REQUIRED)
+#    find_package(julia ${julia_REQUIRED_VERSION} REQUIRED)
+    pkg_search_module(JULIA julia REQUIRED)
 endif ()
 
 
