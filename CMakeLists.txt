@@ -113,7 +113,10 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
     elseif (XEUS_JULIA_DISABLE_TUNE_GENERIC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     else ()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+# Apple clang does not support -march=native
+        if (NOT APPLE)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+        endif ()
     endif ()
 
     CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP_17_FLAG)
