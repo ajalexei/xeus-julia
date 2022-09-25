@@ -101,7 +101,7 @@ namespace xeus_julia
             //  Base.repr function
             const static jl_function_t *repr_func = jl_get_function(jl_base_module, "repr");
             //  output MIME type
-            const static jl_value_t *mime = jl_box_string("text/plain");
+            const static jl_value_t *mime = jl_eval_string("\"text/plain\"");
             //  execute repr(mime="text/plain", result) in Julia
             jl_value_t *result_jl_string = jl_call2(repr_func, mime, result);
             //  convert Julia string to C++ string
