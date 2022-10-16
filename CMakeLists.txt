@@ -1,9 +1,9 @@
 #############################################################################
-#Copyright (c) 2022, Alexei Andreanov
+# Copyright (c) 2022, Alexei Andreanov
 #
-#Distributed under the terms of the GNU General Public License v3.
+# Distributed under the terms of the GNU General Public License v3.
 #
-#The full license is in the file LICENSE, distributed with this software.
+# The full license is in the file LICENSE, distributed with this software.
 #############################################################################
 
 cmake_minimum_required(VERSION 3.4.3)
