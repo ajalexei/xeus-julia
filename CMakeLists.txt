@@ -65,20 +65,12 @@ OPTION(XEUS_JULIA_USE_SHARED_XEUS_JULIA "Link xjulia with the xeus shared librar
 # ============
 
 # Alexei: Fing pkg-config
-find_package(PkgConfig REQUIRED)
-
-# Alexei: UUID
-#if(UNIX AND NOT APPLE)
-#    pkg_search_module(UUID REQUIRED uuid>=1.32)
-#endif()
-
-# if (TARGET PkgConfig::LibUUID)
-#    message(STATUS "Found libuuid)
-# endif ()
+#find_package(PkgConfig REQUIRED)
 
 set(xtl_REQUIRED_VERSION 0.6.23)
 set(xeus_REQUIRED_VERSION 2.0.0)
-set(julia_REQUIRED_VERSION 1.7)
+# Alexei: not needed!
+#set(julia_REQUIRED_VERSION 1.7)
 
 if (NOT TARGET xtl)
     find_package(xtl ${xtl_REQUIRED_VERSION} REQUIRED)
@@ -88,11 +80,11 @@ if (NOT TARGET xeus AND NOT TARGET xeus-static)
     find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 endif ()
 
-if (NOT TARGET julia)
-#   Alexei: commented out by me?
+# Alexei: not needed?
+#if (NOT TARGET julia)
 #    find_package(julia ${julia_REQUIRED_VERSION} REQUIRED)
-    pkg_search_module(JULIA REQUIRED julia)
-endif ()
+#    pkg_search_module(JULIA REQUIRED julia)
+#endif ()
 
 
 # Flags
@@ -114,7 +106,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
     elseif (XEUS_JULIA_DISABLE_TUNE_GENERIC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     else ()
-# Apple clang does not support -march=native
+# Alexei: Apple clang does not support -march=native
         if (NOT APPLE)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
         endif ()
