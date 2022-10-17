@@ -1,2 +1,2 @@
 # ?
-CMAKE_PREFIX_PATH="/opt/mambaforge" mrun cmake .
+CMAKE_PREFIX_PATH="/opt/mambaforge" /opt/bin/mrun cmake .
